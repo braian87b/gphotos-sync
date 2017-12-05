@@ -169,7 +169,7 @@ class PicasaSync(object):
 
     def _match_by_date(self, media, media_type=None):
         """
-        Now only use create date here - picasweb modify date is unreliable
+        Now only use create date here - picasaweb modify date is unreliable
 
         :param (PicasaMedia) media: media item to find a match on
         :param (MediaType) media_type: type of media to search for
@@ -240,7 +240,7 @@ class PicasaSync(object):
 
         # todo is this correct
         log.info(u'Total Album Photos in Drive %d, Picasa %d, multiples %d',
-                 helper.total_photos, helper.total_photos,
+                 helper.drive_photos, helper.total_photos,
                  helper.multiple_match_count)
 
         # Making this a 'friend' class of
@@ -321,8 +321,8 @@ class IndexAlbumHelper:
         for photo in photos.entry:
             picasa_media = PicasaMedia(None, self.p._root_folder, photo)
 
-            if picasa_media.create_date < self.latest_download and \
-                    self.album.filename in PicasaSync.HIDDEN_ALBUMS:
+            if self.album.filename in PicasaSync.ALL_FILES_ALBUMS and \
+                    picasa_media.create_date < self.sync_date:
                 completed = True
                 break
 
@@ -367,6 +367,7 @@ class IndexAlbumHelper:
                 log.info(u'unmatched %s', picasa_media.local_full_path)
                 self.p._db.put_album_file(self.album.id, picasa_row_id)
             else:
+                self.drive_photos += 1
                 # store link between album and drive file
                 log.debug(u'matched %s', picasa_media.local_full_path)
                 self.p._db.put_album_file(self.album.id, drive_rows[0].Id)

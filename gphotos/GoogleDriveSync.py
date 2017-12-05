@@ -14,6 +14,7 @@ from LocalData import LocalData
 from gphotos.DatabaseMedia import DatabaseMedia
 import logging
 
+
 class NoGooglePhotosFolderError(Exception):
     pass
 
