@@ -137,17 +137,20 @@ class GooglePhotosSyncMain:
                                           credentials_json=credentials_file,
                                           no_browser=args.no_browser)
 
-        self.picasa_sync = PicasaSync(self.drive_sync.credentials,
-                                      args.root_folder, self.data_store,
-                                      args.flush_index)
+        if not args.skip_picasa:
+            self.picasa_sync = PicasaSync(self.drive_sync.credentials,
+                                          args.root_folder, self.data_store,
+                                          args.flush_index)
+            self.picasa_sync.startDate = args.start_date
+            self.picasa_sync.endDate = args.end_date
+            self.picasa_sync.includeVideo = not args.skip_video
+            self.picasa_sync.album_name = args.album
 
-        self.drive_sync.startDate = self.picasa_sync.startDate = args.start_date
-        self.drive_sync.endDate = self.picasa_sync.endDate = args.end_date
-        self.drive_sync.includeVideo = self.picasa_sync.includeVideo = \
-            not args.skip_video
+        self.drive_sync.startDate = args.start_date
+        self.drive_sync.endDate = args.end_date
+        self.drive_sync.includeVideo = not args.skip_video
         self.drive_sync.driveFileName = args.drive_file
         self.drive_sync.allDrive = args.all_drive
-        self.picasa_sync.album_name = args.album
 
     @classmethod
     def logging(cls, args):
